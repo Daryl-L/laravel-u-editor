@@ -87,6 +87,12 @@ class Controller extends BaseController
                         $config['imageManagerListSize'],
                         $config['imageManagerListPath'],
                         $request))->getList();
+                } else if (config('UEditorUpload.core.mode') == 'ftp') {
+                    $result = with(new ListFtp(
+                        $config['imageManagerAllowFiles'],
+                        $config['imageManagerListSize'],
+                        $config['imageManagerListPath'],
+                        $request))->getList();
                 }
 
 

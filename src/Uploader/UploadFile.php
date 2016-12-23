@@ -1,5 +1,6 @@
 <?php namespace Stevenyangecho\UEditor\Uploader;
 
+use Illuminate\Support\Facades\Storage;
 use Stevenyangecho\UEditor\Uploader\Upload;
 
 /**
@@ -13,6 +14,7 @@ use Stevenyangecho\UEditor\Uploader\Upload;
  */
 class UploadFile  extends Upload{
     use UploadQiniu;
+    use UploadFtp;
     public function doUpload()
     {
 
@@ -70,7 +72,10 @@ class UploadFile  extends Upload{
             $content=file_get_contents($this->file->getPathname());
             return $this->uploadQiniu($this->filePath,$content);
 
-        }else{
+        } elseif (config('UEditorUpload.core.mode') == 'ftp') {
+            $content = file_get_contents($this->file->getPathname());
+            return $this->uploadFtp(session('siteHost'), Storage::disk('ftpUEditor'), $content);
+        } else {
             $this->stateInfo = $this->getStateInfo("ERROR_UNKNOWN_MODE");
             return false;
         }
